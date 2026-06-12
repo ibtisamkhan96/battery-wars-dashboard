@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battery Wars: Who Powers the EV Revolution — 2025 Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0a0e1a; --card:#111728; --card2:#151d33; --border:#1f2a47;
+    --text:#e8ecf6; --muted:#8b96b3; --cnA:#ef4444; --cnB:#fbbf24;
+    --kr:#3b82f6; --jp:#a78bfa; --green:#34d399; --cyan:#22d3ee;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;
+    background-image:radial-gradient(ellipse 80% 50% at 25% -10%,rgba(251,191,36,.10),transparent),
+    radial-gradient(ellipse 80% 50% at 75% -10%,rgba(34,211,238,.10),transparent)}
+  .wrap{max-width:1280px;margin:0 auto;padding:32px 24px 60px}
+  header{text-align:center;margin-bottom:8px}
+  h1{font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-1px;
+    background:linear-gradient(90deg,var(--cnB) 15%,#fff 50%,var(--cyan) 85%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--muted);font-size:15px;margin-top:8px}
+  .flags{font-size:26px;letter-spacing:8px;margin-top:4px}
+  .tabs{display:flex;gap:8px;justify-content:center;margin:28px 0;flex-wrap:wrap}
+  .tab{padding:10px 22px;border-radius:99px;border:1px solid var(--border);background:var(--card);
+    color:var(--muted);cursor:pointer;font-size:14px;font-weight:600;transition:all .25s}
+  .tab:hover{border-color:var(--cnB);color:var(--text);transform:translateY(-2px)}
+  .tab.active{background:linear-gradient(90deg,#b45309,#0e7490);color:#fff;border-color:transparent;
+    box-shadow:0 4px 20px rgba(251,191,36,.25)}
+  .panel{display:none;animation:fade .45s ease}
+  .panel.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
+  .kpi{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;
+    position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+  .kpi:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cnB),var(--cyan))}
+  .kpi .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
+  .kpi .val{font-size:30px;font-weight:800}
+  .kpi .delta{font-size:13px;margin-top:6px;font-weight:600}
+  .up{color:var(--green)} .down{color:var(--cnA)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .grid .full{grid-column:1/-1}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;transition:border-color .3s}
+  .card:hover{border-color:#2d3c63}
+  .card h3{font-size:16px;font-weight:700;margin-bottom:4px}
+  .card .note{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .chartbox{position:relative;height:340px}
+  .chartbox.tall{height:420px}
+  .legendrow{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:12.5px;color:var(--muted);font-weight:600}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+  /* timeline */
+  .timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .tcard{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:18px}
+  .tcard .yr{font-size:24px;font-weight:800;color:var(--cnB)}
+  .tcard .who{font-size:15px;font-weight:700;margin:6px 0 4px}
+  .tcard p{font-size:13px;color:var(--muted);line-height:1.55}
+  footer{margin-top:36px;text-align:center;color:var(--muted);font-size:12px;line-height:1.9}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="flags">🔋 ⚡ 🌏</div>
+    <h1>Battery Wars: Who Powers the EV Revolution</h1>
+    <div class="sub">Global EV battery installations, market share &amp; chemistry — Full-Year 2025 (SNE Research) · Updated June 2026</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-p="overview">📊 Overview</button>
+    <button class="tab" data-p="rankings">🏆 Rankings</button>
+    <button class="tab" data-p="chem">🧪 Chemistry Shift</button>
+    <button class="tab" data-p="next">🔮 What's Next</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="panel show" id="overview">
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">Global installations 2025</div><div class="val">1,187 GWh</div><div class="delta up">▲ +31.7% YoY</div></div>
+      <div class="kpi"><div class="lbl">🇨🇳 #1 CATL share</div><div class="val">39.2%</div><div class="delta up">▲ 464.7 GWh (+35.7%)</div></div>
+      <div class="kpi"><div class="lbl">🇨🇳 Chinese makers combined</div><div class="val">~70%</div><div class="delta up">Top-10 Chinese firms alone</div></div>
+      <div class="kpi"><div class="lbl">🇰🇷 Korean trio (LG+SK+SDI)</div><div class="val">15.4%</div><div class="delta down">▼ from 18.7% in 2024</div></div>
+    </div>
+    <div class="grid">
+      <div class="card full">
+        <h3>2025 EV Battery Installations by Maker (GWh)</h3>
+        <div class="note">CATL alone installed more than the next five combined. Color = home country.</div>
+        <div class="legendrow"><span><span class="dot" style="background:var(--cnA)"></span>China</span><span><span class="dot" style="background:var(--kr)"></span>South Korea</span><span><span class="dot" style="background:var(--jp)"></span>Japan</span></div>
+        <div class="chartbox tall"><canvas id="gwhChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Market Share by Country of Origin</h3>
+        <div class="note">Six of the top 10 makers are Chinese. Japan, which invented the lithium-ion business, is down to one player in the top 10.</div>
+        <div class="chartbox"><canvas id="countryChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Top 3 Growth, 2023 → 2025 (GWh)</h3>
+        <div class="note">CATL added ~205 GWh in two years — that's like adding two entire LG Energy Solutions.</div>
+        <div class="chartbox"><canvas id="trendChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RANKINGS -->
+  <div class="panel" id="rankings">
+    <div class="grid">
+      <div class="card">
+        <h3>2025 Global Market Share</h3>
+        <div class="note">SNE Research, Jan–Dec 2025. CATL is the only maker above 30%.</div>
+        <div class="chartbox tall"><canvas id="shareDonut"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>YoY Growth of the Big 3 (%)</h3>
+        <div class="note">The gap isn't just size — it's speed. CATL is growing 3x faster than LG.</div>
+        <div class="chartbox tall"><canvas id="growthChart"></canvas></div>
+      </div>
+      <div class="card full">
+        <h3>Inside China: Even More Concentrated</h3>
+        <div class="note">In China's domestic market (2025), CATL holds 43.4% and BYD 21.6% — two companies control two-thirds of the world's largest battery market.</div>
+        <div class="chartbox"><canvas id="chinaChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHEMISTRY -->
+  <div class="panel" id="chem">
+    <div class="grid">
+      <div class="card">
+        <h3>LFP's Takeover (global share of EV batteries)</h3>
+        <div class="note">Iron-phosphate was written off as "low-end" five years ago. In 2025 it overtook nickel chemistries globally for the first time.</div>
+        <div class="chartbox"><canvas id="lfpTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>LFP Share by Region, 2025</h3>
+        <div class="note">The chemistry map IS the geopolitics map: China bet on cheap iron, the West bet on nickel — and iron won on cost.</div>
+        <div class="chartbox"><canvas id="lfpRegion"></canvas></div>
+      </div>
+      <div class="card full">
+        <h3>Why It Matters</h3>
+        <div class="note" style="font-size:14px;line-height:1.8;margin-bottom:0">
+        LFP needs no nickel and no cobalt — the two most contested minerals in the EV supply chain. China controls most LFP cathode production and holds the patents, the process know-how, and the cost curve. That single chemistry decision, made a decade ago, is a big part of why Chinese cells are ~20-30% cheaper per kWh and why Tesla, Ford and VW now buy or license Chinese LFP technology for their entry models.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEXT -->
+  <div class="panel" id="next">
+    <div class="card full" style="margin-bottom:20px">
+      <h3>The Solid-State Race</h3>
+      <div class="note">The next battlefield: solid electrolytes promise ~2x energy density and 10-minute charging. Timelines below are company targets — treat with healthy skepticism.</div>
+      <div class="timeline">
+        <div class="tcard"><div class="yr">2026</div><div class="who">🇺🇸 QuantumScape (VW)</div><p>First qualification samples of lithium-metal solid-state cells; industrialization deal with VW's PowerCo. Vehicle integration targeted ~2028.</p></div>
+        <div class="tcard"><div class="yr">2026–27</div><div class="who">🇯🇵 Toyota</div><p>Limited production start in Japan; targets 1,000 km range and 10-minute charging with sulfide electrolytes. Mass production "2030 and beyond."</p></div>
+        <div class="tcard"><div class="yr">2027</div><div class="who">🇰🇷 Samsung SDI</div><p>Pilot lines running; oxide-based cells aimed at premium EVs first — Korea's best shot at regaining ground.</p></div>
+        <div class="tcard"><div class="yr">2027–28</div><div class="who">🇨🇳 CATL &amp; BYD</div><p>Semi-solid-state cells already shipping in limited models; both hedge with sodium-ion for cheap segments. Scale advantage may decide this race too.</p></div>
+      </div>
+    </div>
+    <div class="card full">
+      <h3>Scoreboard Prediction Inputs</h3>
+      <div class="chartbox"><canvas id="radarChart"></canvas></div>
+    </div>
+  </div>
+
+  <footer>
+    Data: SNE Research FY2025 via CnEVPost &amp; electrive · IEA Global EV Outlook 2025 · InsideEVs · company announcements.<br>
+    Installations = GWh of batteries in delivered EVs. Shares rounded. Solid-state dates are company targets.<br>
+    Built by Ibtisam Ahmed Khan · June 2026 · Part of the "Tech Wars" dashboard series
+  </footer>
+</div>
+
+<script>
+Chart.defaults.color='#8b96b3';
+Chart.defaults.borderColor='rgba(139,150,179,.12)';
+Chart.defaults.font.family="'Segoe UI',system-ui,sans-serif";
+Chart.defaults.plugins.tooltip.backgroundColor='#1a2440';
+Chart.defaults.plugins.tooltip.padding=12;
+Chart.defaults.plugins.tooltip.cornerRadius=10;
+Chart.defaults.animation.duration=900;
+Chart.defaults.animation.easing='easeOutQuart';
+const fmt=n=>n>=1000?(n/1000).toFixed(2)+' TWh':n+' GWh';
+const makers=[
+ {n:'CATL',c:'cn',gwh:464.7,share:39.2,g:35.7},
+ {n:'BYD',c:'cn',gwh:194.8,share:16.4,g:27.7},
+ {n:'LG Energy',c:'kr',gwh:108.8,share:9.2,g:11.3},
+ {n:'CALB',c:'cn',gwh:62.8,share:5.3,g:null},
+ {n:'Gotion',c:'cn',gwh:53.5,share:4.5,g:null},
+ {n:'SK On',c:'kr',gwh:44.5,share:3.7,g:null},
+ {n:'Panasonic',c:'jp',gwh:44.2,share:3.7,g:null},
+ {n:'EVE Energy',c:'cn',gwh:31.3,share:2.6,g:null},
+ {n:'Samsung SDI',c:'kr',gwh:28.9,share:2.4,g:null},
+ {n:'Svolt',c:'cn',gwh:28.5,share:2.4,g:null}
+];
+const cc={cn:'#ef4444',kr:'#3b82f6',jp:'#a78bfa'};
+const flag={cn:'🇨🇳 ',kr:'🇰🇷 ',jp:'🇯🇵 '};
+
+new Chart(document.getElementById('gwhChart'),{type:'bar',
+ data:{labels:makers.map(m=>flag[m.c]+m.n),
+  datasets:[{data:makers.map(m=>m.gwh),backgroundColor:makers.map(m=>cc[m.c]),borderRadius:9,maxBarThickness:40}]},
+ options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const m=makers[c.dataIndex];return ` ${m.gwh} GWh · ${m.share}% share${m.g?' · +'+m.g+'% YoY':''}`}}}},
+  scales:{x:{title:{display:true,text:'2025 installations (GWh)'}},y:{grid:{display:false},ticks:{font:{size:13,weight:'600'},color:'#e8ecf6'}}}}});
+
+new Chart(document.getElementById('countryChart'),{type:'doughnut',
+ data:{labels:['🇨🇳 China 70.4%','🇰🇷 South Korea 15.3%','🇯🇵 Japan 3.7%','Others 10.5%'],
+  datasets:[{data:[70.4,15.3,3.7,10.5],backgroundColor:['#ef4444','#3b82f6','#a78bfa','#33405f'],
+   borderColor:'#0a0e1a',borderWidth:3,hoverOffset:14}]},
+ options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+  plugins:{legend:{position:'right',labels:{usePointStyle:true,pointStyle:'circle',padding:12,font:{size:12.5}}},
+   tooltip:{callbacks:{label:c=>` ${c.raw}% of global installations`}}}}});
+
+new Chart(document.getElementById('trendChart'),{type:'line',
+ data:{labels:['2023','2024','2025'],datasets:[
+  {label:'CATL',data:[259.7,342.5,464.7],borderColor:'#ef4444',backgroundColor:'#ef4444',tension:.35,borderWidth:3,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#0a0e1a',pointBorderWidth:2.5},
+  {label:'BYD',data:[111.4,152.6,194.8],borderColor:'#fbbf24',backgroundColor:'#fbbf24',tension:.35,borderWidth:3,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#0a0e1a',pointBorderWidth:2.5},
+  {label:'LG Energy',data:[95.8,97.8,108.8],borderColor:'#3b82f6',backgroundColor:'#3b82f6',tension:.35,borderWidth:3,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#0a0e1a',pointBorderWidth:2.5}]},
+ options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+  plugins:{legend:{labels:{usePointStyle:true,pointStyle:'circle',padding:16}},
+   tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw} GWh`}}},
+  scales:{y:{title:{display:true,text:'GWh installed'}},x:{grid:{display:false}}}}});
+
+new Chart(document.getElementById('shareDonut'),{type:'doughnut',
+ data:{labels:makers.map(m=>m.n+' '+m.share+'%').concat(['Others 10.5%']),
+  datasets:[{data:makers.map(m=>m.share).concat([10.5]),
+   backgroundColor:['#ef4444','#fbbf24','#3b82f6','#f97316','#fb7185','#60a5fa','#a78bfa','#f59e0b','#93c5fd','#fca5a5','#33405f'],
+   borderColor:'#0a0e1a',borderWidth:3,hoverOffset:14}]},
+ options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+  plugins:{legend:{position:'right',labels:{usePointStyle:true,pointStyle:'circle',padding:9,font:{size:11.5}}},
+   tooltip:{callbacks:{label:c=>` ${c.label}`}}}}});
+
+new Chart(document.getElementById('growthChart'),{type:'bar',
+ data:{labels:['CATL','BYD','LG Energy','Market avg'],
+  datasets:[{data:[35.7,27.7,11.3,31.7],backgroundColor:['#ef4444','#fbbf24','#3b82f6','rgba(139,150,179,.4)'],borderRadius:9,maxBarThickness:70}]},
+ options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` +${c.raw}% YoY (2025)`}}},
+  scales:{y:{title:{display:true,text:'YoY growth %'}},x:{grid:{display:false},ticks:{font:{size:13,weight:'600'},color:'#e8ecf6'}}}}});
+
+new Chart(document.getElementById('chinaChart'),{type:'bar',
+ data:{labels:['China domestic market 2025'],datasets:[
+  {label:'CATL 43.4%',data:[43.4],backgroundColor:'#ef4444',borderRadius:6},
+  {label:'BYD 21.6%',data:[21.6],backgroundColor:'#fbbf24',borderRadius:6},
+  {label:'All others 35.0%',data:[35.0],backgroundColor:'rgba(139,150,179,.35)',borderRadius:6}]},
+ options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{usePointStyle:true,pointStyle:'rectRounded',padding:16}},
+   tooltip:{callbacks:{label:c=>` ${c.dataset.label}`}}},
+  scales:{x:{stacked:true,max:100,ticks:{callback:v=>v+'%'}},y:{stacked:true,grid:{display:false}}}}});
+
+new Chart(document.getElementById('lfpTrend'),{type:'line',
+ data:{labels:['2020','2021','2022','2023','2024','2025'],datasets:[
+  {label:'LFP (iron) share',data:[9,20,30,37,42,50],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,.15)',fill:true,tension:.35,borderWidth:3.5,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:'#0a0e1a',pointBorderWidth:2.5},
+  {label:'Nickel (NMC/NCA) share',data:[91,80,70,63,58,50],borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,.12)',fill:true,tension:.35,borderWidth:3.5,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:'#0a0e1a',pointBorderWidth:2.5}]},
+ options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+  plugins:{legend:{labels:{usePointStyle:true,pointStyle:'circle',padding:16}},
+   tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ~${c.raw}%`}}},
+  scales:{y:{max:100,ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}});
+
+new Chart(document.getElementById('lfpRegion'),{type:'bar',
+ data:{labels:['🇨🇳 China','Rest of world','🇪🇺 Europe','🇺🇸 North America'],
+  datasets:[{data:[79,57,13,5],backgroundColor:['#ef4444','#fbbf24','#3b82f6','#22d3ee'],borderRadius:9,maxBarThickness:64}]},
+ options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` LFP = ${c.raw}% of 2025 EV battery GWh`}}},
+  scales:{y:{max:100,title:{display:true,text:'LFP share of EV batteries 2025'},ticks:{callback:v=>v+'%'}},x:{grid:{display:false},ticks:{font:{size:12.5,weight:'600'},color:'#e8ecf6'}}}}});
+
+new Chart(document.getElementById('radarChart'),{type:'radar',
+ data:{labels:['Scale today','Cost position','Chemistry breadth','Solid-state progress','Customer lock-in','Geopolitical risk (inverted)'],
+  datasets:[
+   {label:'China (CATL/BYD)',data:[10,9,9,7,8,4],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.18)',pointBackgroundColor:'#ef4444',borderWidth:2.5},
+   {label:'Korea (LG/SK/SDI)',data:[5,5,6,7,7,8],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.18)',pointBackgroundColor:'#3b82f6',borderWidth:2.5},
+   {label:'Japan+US (Panasonic/QS)',data:[3,4,4,8,6,8],borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.18)',pointBackgroundColor:'#a78bfa',borderWidth:2.5}]},
+ options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{usePointStyle:true,pointStyle:'circle',padding:14}}},
+  scales:{r:{min:0,max:10,ticks:{display:false},grid:{color:'rgba(139,150,179,.15)'},angleLines:{color:'rgba(139,150,179,.15)'},pointLabels:{font:{size:11.5,weight:'600'},color:'#e8ecf6'}}}}});
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.panel').forEach(x=>x.classList.remove('show'));
+ t.classList.add('active');
+ document.getElementById(t.dataset.p).classList.add('show');
+});
+</script>
+</body>
+</html>
